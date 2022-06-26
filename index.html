@@ -87,23 +87,14 @@
         });
 
         function addCue(){
-            let cue_number = prompt("Enter Cue Number");
-            while(isNaN(cue_number) || cue_number == ""){
-                cue_number = prompt("Enter Cue Number");
-            }
             let cue_cue = prompt("Enter Cue's Cue")
             let cue_time = prompt("Enter Time");
-            cue_numbert = cue_number.replace(/\./g, "_");
-            if($("#cue_" + cue_numbert + "_number_cue").length > 0){
-                alert("Cue number already exists");
-                return;
-            }
 
             $("#cue_table").append(
                 `<tr>` +
-                    `<td onclick="editCueNumber('${cue_numbert}')" id="cue_${cue_numbert}_number_cue">${cue_number}</td>` +
-                    `<td onclick="editCueCue('${cue_numbert}')" id="cue_${cue_numbert}_cue_cue">${cue_cue}</td>` +
-                    `<td onclick="editCueTime('${cue_numbert}')" id="cue_${cue_numbert}_cue_time">${cue_time}</td>` +
+                    `<td onclick="editCueNumber('${cue_numbers}')" id="cue_${cue_numbers}_number_cue">${cue_numbers}</td>` +
+                    `<td onclick="editCueCue('${cue_numbers}')" id="cue_${cue_numbers}_cue_cue">${cue_cue}</td>` +
+                    `<td onclick="editCueTime('${cue_numbers}')" id="cue_${cue_numbers}_cue_time">${cue_time}</td>` +
                 `</tr>`
             );
             cue_numbers++;
