@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cue Sheet Generator</title>
+    <link rel="stylesheet" href="css/nav.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/index.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+</head>
+<body class="c-body">
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <nav class="n-nav">
+        <div class="n-nav-lefthalf">
+            <p>Cue Sheet Generator</p>
+        </div>
+        <div class="n-nav-righthalf">
+            <icon class="n-print_icon">
+                <svg xmlns="http://www.w3.org/2000/svg" onclick="genpdf()" style="cursor: pointer;" class="h-6 n-print_icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+            </icon>
+        </div>
+    </nav>
+
+    <table class="i-cue-table" id="cue_table">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)" style="cursor: pointer;">Cue Number</th>
+                <th onclick="sortTable(1)" style="cursor: pointer;">Cue's Cue</th>
+                <th onclick="sortTableNUM(2)" style="cursor: pointer;">Time</th>
+            </tr>
+        </thead>
+        <tbody id="cue_table">
+        </tbody>
+    </table>
+
+    <div class="i-add_cue" style="width: 85vw; display: flex; justify-content: end; margin: 0 auto;">
+        <button class="i-add_cue_button" onclick="addCue()">
+            <svg xmlns="http://www.w3.org/2000/svg" style="height: 1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Add Cue
+        </button>
+    </div>
+
+    <script>
+        cue_numbers = 1;
+        function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+        }
+
+        window.addEventListener('load', function() {
+            setTimeout(function (){
+                    randint = getRandomInt(800);
+                    $("#loader").fadeOut(randint);
+                    setTimeout(function() {
+                        $("#loader").remove();
+                    }, randint);
+            }, getRandomInt(1500))
+        });
+
+        function addCue(){
+            let cue_number = prompt("Enter Cue Number");
+            while(isNaN(cue_number) || cue_number == ""){
+                cue_number = prompt("Enter Cue Number");
+            }
+            let cue_cue = prompt("Enter Cue's Cue")
+            let cue_time = prompt("Enter Time");
+            cue_numbert = cue_number.replace(/\./g, "_");
+            if($("#cue_" + cue_numbert + "_number_cue").length > 0){
+                alert("Cue number already exists");
+                return;
+            }
+
+            $("#cue_table").append(
+                `<tr>` +
+                    `<td onclick="editCueNumber('${cue_numbert}')" id="cue_${cue_numbert}_number_cue">${cue_number}</td>` +
+                    `<td onclick="editCueCue('${cue_numbert}')" id="cue_${cue_numbert}_cue_cue">${cue_cue}</td>` +
+                    `<td onclick="editCueTime('${cue_numbert}')" id="cue_${cue_numbert}_cue_time">${cue_time}</td>` +
+                `</tr>`
+            );
+            cue_numbers++;
+        }
+
+        function editCueNumber(number){
+            let newNumber = prompt("Enter new cue number", $("#cue_" + number + "_number_cue").text());
+            // if newNumber is not a number, then ask for a new number
+            while(isNaN(newNumber)){
+                newNumber = prompt("Enter new cue NUMBER", $("#cue_" + number + "_number_cue").text());
+            }
+            $("#cue_" + number + "_number_cue").text(newNumber);
+            if(newNumber.includes(".")){
+                newNumber = newNumber.replace(".", "_");
+            }
+            $("#cue_" + number + "_number_cue").attr("id", "cue_" + newNumber + "_number_cue");
+            $("#cue_" + number + "_cue_cue").attr("id", "cue_" + newNumber + "_cue_cue");
+            $("#cue_" + number + "_cue_time").attr("id", "cue_" + newNumber + "_cue_time");
+            $("#cue_" + newNumber + "_number_cue").attr("onclick", "editCueNumber('" + newNumber + "')");
+            $("#cue_" + newNumber + "_cue_cue").attr("onclick", "editCueCue('" + newNumber + "')");
+            $("#cue_" + newNumber + "_cue_time").attr("onclick", "editCueTime('" + newNumber + "')");
+        }
+
+        function editCueCue(number){
+            let newCue = prompt("Enter new cue", $("#cue_" + number + "_cue_cue").text());
+            if(newCue != null){
+                $("#cue_" + number + "_cue_cue").text(newCue);
+            }
+        }
+
+        function editCueTime(number){
+            let newTime = prompt("Enter new time", $("#cue_" + number + "_cue_time").text());
+            if(newTime != null){
+                $("#cue_" + number + "_cue_time").text(newTime);
+            }
+        }
+
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("cue_table");
+            switching = true;
+            // Set the sorting direction to ascending:
+            dir = "asc";
+            /* Make a loop that will continue until
+            no switching has been done: */
+            while (switching) {
+                // Start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /* Loop through all table rows (except the
+                first, which contains table headers): */
+                for (i = 1; i < (rows.length - 1); i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare,
+                one from current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                /* Check if the two rows should switch place,
+                based on the direction, asc or desc: */
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    // If so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    // If so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                    }
+                }
+                }
+                if (shouldSwitch) {
+                /* If a switch has been marked, make the switch
+                and mark that a switch has been done: */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                // Each time a switch is done, increase this count by 1:
+                switchcount ++;
+                } else {
+                /* If no switching has been done AND the direction is "asc",
+                set the direction to "desc" and run the while loop again. */
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+                }
+            }
+            }
+
+        function sortTableNUM(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("cue_table");
+            switching = true;
+            // Set the sorting direction to ascending:
+            dir = "asc";
+            /* Make a loop that will continue until
+            no switching has been done: */
+            while (switching) {
+                // Start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /* Loop through all table rows (except the
+                first, which contains table headers): */
+                for (i = 1; i < (rows.length - 1); i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare,
+                one from current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                /* Check if the two rows should switch place,
+                based on the direction, asc or desc: */
+                if (dir == "asc") {
+                    if (Number(x.innerHTML) > Number(y.innerHTML)) {
+                    // If so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                    }
+                } else if (dir == "desc") {
+                    if (Number(x.innerHTML) < Number(y.innerHTML)) {
+                    // If so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                    }
+                }
+                }
+                if (shouldSwitch) {
+                    /* If a switch has been marked, make the switch
+                    and mark that a switch has been done: */
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    // Each time a switch is done, increase this count by 1:
+                    switchcount ++;
+                } else {
+                    /* If no switching has been done AND the direction is "asc",
+                    set the direction to "desc" and run the while loop again. */
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        function genpdf(){
+            var doc = new jspdf.jsPDF('l')
+            
+            sortTableNUM(0)
+
+            doc.autoTable({ html: '#cue_table' })
+            doc.save('table.pdf')
+        }
+    </script>
+    <script src="jspdf.umd.js"></script>
+    <script src="jspdf.plugin.autotable.js"></script>
+
+
+</body>
+</html>

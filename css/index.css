@@ -1,0 +1,63 @@
+table.i-cue-table {
+    background-color: #ffffff00;
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    color: #fff;
+
+    width: 85vw;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table.i-cue-table td, table.i-cue-table th {
+    padding: 10px 3px;
+    padding-left: 20px;
+}
+
+table.i-cue-table tbody td {
+    font-size: 13px;
+}
+
+table.i-cue-table tr:nth-child(even) {
+    background-color: #ffffff15;
+}
+
+table.i-cue-table thead {
+    background: transparent;
+}
+
+table.i-cue-table thead th {
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+}
+
+table.i-cue-table thead th:first-child{
+    border-left: none;
+}
+
+table.i-cue-table tfoot td {
+    font-size: 14px;
+}
+
+.i-add_cue_button {
+    display: flex;
+    background: #ffffff40;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 0;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0;
+
+    transition: 0.2s ease background;
+}
+
+.i-add_cue_button:hover {
+    background: #ffffff20;
+}
